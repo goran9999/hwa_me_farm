@@ -1,24 +1,53 @@
-import React from 'react';
-import ElectronSVG from './electronjs-icon.svg'
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./index.css";
+import "./App.css";
+import { Toaster } from "react-hot-toast";
+import Sidebar from "./components/Sidebar";
+import Routes from "./Routes";
+import Login from "./components/Login";
+import { getToken } from "./api";
 
-export const App: React.FC = () => {
+function App() {
+  useEffect(() => {
+    void getJwtToken();
+  }, []);
+
+  const [token, setToken] = useState<string>();
+  const getJwtToken = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      if (token) {
+        setToken(token);
+      } else {
+        const data = await getToken();
+        if (data.jwt) {
+          setToken(data.jwt);
+          localStorage.setItem("jwt", data.jwt);
+        }
+      }
+    } catch (error) {}
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={ElectronSVG} className="App-logo" alt="logo" />
-        <p>
-          Electron, Typescript and React.
-        </p>      
-        <a
-          className="App-link"
-          href="https://github.com/caiulucas"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Made by caiulucas
-        </a>
-      </header>
+      <Toaster />
+      <div className="w-full h-full flex gap-0 items-start">
+        <Sidebar />
+        <div className="w-full p-2 h-[100vh] items-start flex">
+          {token ? (
+            <Routes />
+          ) : (
+            <Login
+              setToken={(t) => {
+                setToken(t);
+                localStorage.setItem("jwt", t);
+              }}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }
+
+export default App;

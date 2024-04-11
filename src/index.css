@@ -1,13 +1,42 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body{
+  background-color: black;
+}
+p,button,div{
+  color: white;
+}
+input:focus{
+  outline: none;
+}
+th{
+  opacity: 0.6;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+input{
+  padding: 8px 4px;
+  background-color: transparent;
+  border: 1px solid rgb(64,63,63);
+  width: 100%;
+  border-radius: 4px;
+}
+
+.react-dropdown-select{
+  background-color: red;
+  width: 100%;
+}
+.react-dropdown-select-item {
+  background-color:#111827;
+}
+
+.react-dropdown-select-item-selected{
+  background-color: #111827;
+
+}
+
+.react-dropdown-select-item react-dropdown-select-item-selected  {
+  background-color: #111827;
 }
