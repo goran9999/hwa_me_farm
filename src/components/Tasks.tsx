@@ -65,7 +65,7 @@ const Tasks = () => {
         return <p className="text-yellow-500">Monitoring bids...</p>;
       }
       case TasksStatus.Executed: {
-        return <p className="text-tw-dark-green">Executed</p>;
+        return <p className="text-tw-dark-green">Listed NFT</p>;
       }
     }
   };
@@ -142,25 +142,27 @@ const Tasks = () => {
             {getStatusText(t.status)}
           </TableCell>
           <TableCell className="text-start">{getModeText(t.bidMode)}</TableCell>
-          <TableCell className="flex items-center gap-2">
-            {t.status !== TasksStatus.Canceled ? (
-              <FaStop
-                onClick={() => setStoppingTask(t.id)}
-                className="text-red-500 cursor-pointer"
-              />
-            ) : (
-              <BsPlayFill
-                onClick={() => setStartingTask(t.collectionSlug)}
-                className="text-green-500 text-2xl cursor-pointer"
-              />
-            )}
-            {t.status === TasksStatus.Canceled && (
-              <FaTrash
-                onClick={() => setDeletingTask(t.id)}
-                className="text-red-500 cursor-pointer"
-              />
-            )}
-          </TableCell>
+          {t.status !== TasksStatus.Executed && (
+            <TableCell className="flex items-center gap-2">
+              {t.status !== TasksStatus.Canceled ? (
+                <FaStop
+                  onClick={() => setStoppingTask(t.id)}
+                  className="text-red-500 cursor-pointer"
+                />
+              ) : (
+                <BsPlayFill
+                  onClick={() => setStartingTask(t.collectionSlug)}
+                  className="text-green-500 text-2xl cursor-pointer"
+                />
+              )}
+              {t.status === TasksStatus.Canceled && (
+                <FaTrash
+                  onClick={() => setDeletingTask(t.id)}
+                  className="text-red-500 cursor-pointer"
+                />
+              )}
+            </TableCell>
+          )}
         </TableRow>
       );
     });
@@ -230,10 +232,10 @@ const Tasks = () => {
             <span className="uppercase font-bold text-tw-green">+</span> Create
             task
           </button>
-          <button className="flex items-center gap-2 border-transparent hover:border-b-red-500 border-[2px]">
+          {/* <button className="flex items-center gap-2 border-transparent hover:border-b-red-500 border-[2px]">
             <FaStop className="text-red-500" />
             Stop All Tasks
-          </button>
+          </button> */}
         </div>
       </div>
 

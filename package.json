@@ -82,11 +82,7 @@
         "executableName": "electron-starter",
         "icon": "assets/icon",
         "extraResource": [
-          "assets",
-          {
-            "from": "./resources/release/hwa_bot",
-            "to": "release"
-          }
+          "assets"
         ]
       },
       "plugins": [
