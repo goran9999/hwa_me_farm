@@ -3,7 +3,6 @@ import toast from "react-hot-toast";
 import { deleteWallet, getWallets } from "../api";
 import { IWallet } from "../interface/wallet.interface";
 import { MdDelete } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
 
 import {
   Table,

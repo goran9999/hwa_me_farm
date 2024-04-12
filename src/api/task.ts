@@ -31,3 +31,10 @@ export async function deleteTask(taskId: number) {
 
   return data;
 }
+export async function updateTask(task: ITaskDto, taskId: number) {
+  const { data } = await axios.patch(`${apiUrl}/task/update/${taskId}`, {
+    ...task,
+  });
+
+  return data;
+}

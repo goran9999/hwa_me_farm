@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ITaskDto, IWallet } from "../interface/wallet.interface";
+import { ITask, ITaskDto, IWallet } from "../interface/wallet.interface";
 import Modal from "./Modal";
 import Select from "react-select";
-import { createTask, getWallets } from "../api";
+import { createTask, getWallets, updateTask } from "../api";
 import { selectStyles } from "../utis";
 import toast from "react-hot-toast";
 
@@ -11,13 +11,27 @@ const CreateTaskModal: FC<{
   close: () => void;
   accounts: IWallet[];
   afterTaskCreated: () => void;
-}> = ({ close, accounts, afterTaskCreated }) => {
+  task?: ITask;
+}> = ({ close, accounts, afterTaskCreated, task }) => {
+  const bidModeOptions = [
+    { label: "Aggressive", value: 0 },
+    { label: "Passive", value: 1 },
+    { label: "Aggressive Match", value: 2 },
+    { label: "Passive Match", value: 3 },
+  ];
+
   const {
     handleSubmit,
     register,
     formState: { errors },
     setValue,
-  } = useForm<ITaskDto>();
+  } = useForm<ITaskDto>({
+    defaultValues: {
+      ...task,
+      bidMode: bidModeOptions.find((b) => b.value === task?.bidMode)?.value,
+      account: accounts.find((acc) => acc.id === task?.accountId)?.id,
+    },
+  });
 
   const getOptions = useMemo(() => {
     return accounts.map((acc) => ({
@@ -26,12 +40,10 @@ const CreateTaskModal: FC<{
     }));
   }, [accounts]);
 
-  const bidModeOptions = [
-    { label: "Aggressive", value: 0 },
-    { label: "Passive", value: 1 },
-    { label: "Aggressive Match", value: 2 },
-    { label: "Passive Match", value: 3 },
-  ];
+  useEffect(() => {
+    if (task) {
+    }
+  }, [task]);
 
   const validateMeUrl = (value: string) =>
     value.startsWith("https://magiceden.io/marketplace/") ||
@@ -40,8 +52,8 @@ const CreateTaskModal: FC<{
   const validateRpcNode = (value: string) =>
     value.startsWith("https://") || "Rpc node must start with https://";
 
-  const handleCreateTask = async (task: ITaskDto) => {
-    const { bidMode, account } = task;
+  const handleCreateTask = async (t: ITaskDto) => {
+    const { bidMode, account } = t;
 
     if (!account) {
       toast.error("Please select account!");
@@ -50,7 +62,12 @@ const CreateTaskModal: FC<{
     const id = toast.loading("Creating task...");
 
     try {
-      const data = await createTask(task);
+      let data;
+      if (!task) {
+        data = await createTask(t);
+      } else {
+        data = await updateTask(t, task.id);
+      }
       toast.success(data.message, { id });
       afterTaskCreated();
     } catch (error: any) {
@@ -75,6 +92,7 @@ const CreateTaskModal: FC<{
         <div className="flex flex-col items-start gap-2">
           <p>Collection ME Url</p>
           <input
+            disabled={!!task}
             placeholder="Magic Eden collection url"
             className="w-full"
             {...register("collectionUrl", {
@@ -85,7 +103,7 @@ const CreateTaskModal: FC<{
               validate: validateMeUrl,
             })}
           />
-          <p className="text-red-500 text-xs">
+          <p className="text-red-500 text-xs disabled:opacity-60">
             {errors.collectionUrl?.message}
           </p>
         </div>
@@ -152,9 +170,10 @@ const CreateTaskModal: FC<{
           </div>
         </div>
         <div className="w-full gap-3 flex items-start">
-          <div className="w-[33%] flex items-start  flex-col gap-2">
+          <div className="w-[33%] flex disabled:opacity-60 items-start  flex-col gap-2">
             <p>Account</p>
             <Select
+              disabled={!!task}
               {...register("account", {
                 required: {
                   value: true,
@@ -221,6 +240,7 @@ const CreateTaskModal: FC<{
         </div>
         <div className="mt-2 flex w-full justify-between">
           <button
+            type="button"
             onClick={close}
             className="border-[1px] px-4 py-2 border-tw-gray rounded-md"
           >
@@ -231,7 +251,7 @@ const CreateTaskModal: FC<{
             type="submit"
             className="border-[1px] hover:bg-tw-green hover:text-white px-4 py-2 rounded-md border-tw-green text-tw-green"
           >
-            Create
+            {!!task ? "Update" : "Create"}
           </button>
         </div>
       </form>

@@ -26,6 +26,7 @@ import CreateTaskModal from "./CreateTaskModal";
 import PromptModal from "./PromptModal";
 import { BsPlayFill } from "react-icons/bs";
 import { FaTrash } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState<ITask[]>([]);
@@ -35,6 +36,7 @@ const Tasks = () => {
   const [stoppingTask, setStoppingTask] = useState<number>();
   const [startingTask, setStartingTask] = useState<string>();
   const [deletingTask, setDeletingTask] = useState<number>();
+  const [editingTask, setEditingTask] = useState<ITask>();
 
   useEffect(() => {
     void getAllWallets();
@@ -145,15 +147,27 @@ const Tasks = () => {
           {t.status !== TasksStatus.Executed && (
             <TableCell className="flex items-center gap-2">
               {t.status !== TasksStatus.Canceled ? (
-                <FaStop
-                  onClick={() => setStoppingTask(t.id)}
-                  className="text-red-500 cursor-pointer"
-                />
+                <>
+                  <FaStop
+                    onClick={() => setStoppingTask(t.id)}
+                    className="text-red-500 cursor-pointer"
+                  />
+                  <MdEdit
+                    onClick={() => setEditingTask(t)}
+                    className="text-blue-500"
+                  />
+                </>
               ) : (
-                <BsPlayFill
-                  onClick={() => setStartingTask(t.collectionSlug)}
-                  className="text-green-500 text-2xl cursor-pointer"
-                />
+                <>
+                  <BsPlayFill
+                    onClick={() => setStartingTask(t.collectionSlug)}
+                    className="text-green-500 text-2xl cursor-pointer"
+                  />
+                  <MdEdit
+                    onClick={() => setEditingTask(t)}
+                    className="text-blue-500"
+                  />
+                </>
               )}
               {t.status === TasksStatus.Canceled && (
                 <FaTrash
@@ -210,6 +224,17 @@ const Tasks = () => {
           close={() => setStartingTask(undefined)}
           onConfirm={handleStartTask}
           text={`Are you sure you want to start again task for: ${startingTask}`}
+        />
+      )}
+      {editingTask && (
+        <CreateTaskModal
+          task={editingTask}
+          accounts={accounts}
+          afterTaskCreated={() => {
+            setEditingTask(undefined);
+            getTasks();
+          }}
+          close={() => setEditingTask(undefined)}
         />
       )}
       {deletingTask && (
