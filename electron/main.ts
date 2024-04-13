@@ -29,7 +29,7 @@ function createWindow() {
       "Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' data:;",
   });
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
@@ -72,13 +72,13 @@ function startRustServer() {
   let pathToExecutable;
 
   if (app.isPackaged) {
-    pathToExecutable = path.join(process.resourcesPath, "release", "hwa_bot");
+    pathToExecutable = path.join(process.resourcesPath, "release", "hwa_bot.exe");
   } else {
     pathToExecutable = path.join(
       app.getAppPath(),
       "resources",
       "release",
-      "hwa_bot"
+      "hwa_bot.exe"
     );
   }
   rustServerProcess = spawn(pathToExecutable);
