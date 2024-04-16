@@ -169,14 +169,15 @@ const Tasks = () => {
                   />
                 </>
               )}
-              {t.status === TasksStatus.Canceled && (
-                <FaTrash
-                  onClick={() => setDeletingTask(t.id)}
-                  className="text-red-500 cursor-pointer"
-                />
-              )}
             </TableCell>
           )}
+          <TableCell>
+            {" "}
+            <FaTrash
+              onClick={() => setDeletingTask(t.id)}
+              className="text-red-500 cursor-pointer"
+            />
+          </TableCell>
         </TableRow>
       );
     });
